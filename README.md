@@ -1,5 +1,5 @@
 # poipoi
-![Alt Text](https://github.com/aboutdevz/poipoi/public/poi.gif)
+![Alt Text](https://github.com/aboutdevz/poipoi/tree/main/public/poi.gif)
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 

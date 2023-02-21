@@ -57,7 +57,7 @@ function Home({ data }) {
         { count !== null &&
           <div className={styles.menu}>
               <div className={styles.title}>
-                  <Image className={styles.poiprofile} src={poiprofile} width="200" height="200" alt="poi poi" />
+                <img className={styles.poiprofile} src="/poi.gif" width="200" height="200" alt="poi poi" />
               </div>
               <div className={styles.content}>
                   <p className={styles.counter} id="counter">{Number(count).toLocaleString('en-US')}</p>

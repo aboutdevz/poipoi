@@ -1,39 +1,44 @@
+import { initializeApp } from "firebase/app";
 import Head from 'next/head'
+import Image from 'next/image'
 import styles from '@/styles/Home.module.css'
+
 import { useEffect, useState } from 'react'
+import poiprofile from '../../public/poi.gif'
 import poii from '../../public/sounds/1.wav'
+import {
+  getFirestore,
+  collection,
+  onSnapshot,
+  updateDoc,
+  doc,
+  increment
+} from 'firebase/firestore'
 
-import io from 'socket.io-client'
-
-let socket
-
-function Home() {
+function Home({ data }) {
   const [count, setCount] = useState(null)
+  const [ref, setRef] = useState({})
   
   useEffect(() => {
-    socketInitializer()
+    const app = initializeApp({
+      apiKey: data.apiKey,
+      authDomain: data.authDomain,
+      projectId: data.projectId,
+      storageBucket: data.storageBucket,
+      messagingSenderId: data.messagingSenderId,
+      appId: data.appId,
+      measurementId: data.measurementId
+    });
+    const ref = doc(collection(getFirestore(app), 'poicount'), data.docId);
+    setRef(ref)
+    onSnapshot(ref, async function(snapshot) {
+      setCount(snapshot.data().count)
+    });
   },[])
-
-  const socketInitializer = async () => {
-    await fetch('/api/poi');
-    socket = io()
-
-    socket.on('connect', () => {
-      console.log('connected')
-    })
-
-    socket.on('count-update', msg => {
-      setCount(parseInt(msg))
-    })
-  }
-
-  const updateDoc = async () => {
-    await fetch('/api/updateCount');
-  }
 
   const updateCount = async () => {
     playAudio()
-    await updateDoc()
+    await updateDoc(ref, {count: increment(1)})
   }
   
   const playAudio = () => {
@@ -63,6 +68,20 @@ function Home() {
       </div>
     </div>
   )
+}
+
+export async function getStaticProps() {
+  const data = {
+    apiKey: process.env.apiKey,
+    authDomain: process.env.authDomain,
+    projectId: process.env.projectId,
+    storageBucket: process.env.storageBucket,
+    messagingSenderId: process.env.messagingSenderId,
+    appId: process.env.appId,
+    measurementId: process.env.measurementId,
+    docId: process.env.docId
+  }
+  return { props: { data } }
 }
 
 export default Home
